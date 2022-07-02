@@ -1,0 +1,32 @@
+{
+  "name": "reddit-server-clone",
+  "version": "1.0.0",
+  "description": "Reddit clone server",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iskren1990/reddit-server-clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Iskren1990/reddit-server-clone/issues"
+  },
+  "homepage": "https://github.com/Iskren1990/reddit-server-clone#readme",
+  "dependencies": {
+    "@koa/cors": "^3.3.0",
+    "dotenv": "^16.0.1",
+    "http-graceful-shutdown": "^3.1.7",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.1.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
