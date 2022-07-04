@@ -1,7 +1,7 @@
-const uuidv4 = require("uuid/v4");
+const {v4 : uuidv4} = require('uuid');
 const defaultAvatarUrl = process.env.DEFAULT_AVATAR_URL;
 
-module.exports = class Users {
+module.exports = class User {
   constructor({
     name,
     avatar = defaultAvatarUrl,
@@ -9,7 +9,7 @@ module.exports = class Users {
     replies = [],
   }) {
     this.id = uuidv4();
-    this.timestampCreated = new Date.now();
+    this.timestampCreated = Date.now();
     this.name = name;
     this.avatar = avatar;
     this.threads = threads;

@@ -1,53 +1,63 @@
-const koa = require('koa');
-const koaRouter = require('koa-router');
-const bodyParser = require('koa-bodyparser');
-const cors = require('@koa/cors');
-const dotenv = require('dotenv');
-const routes = require("./routes");
-const { readDb, gracefullStop } = require("./database");
+  const koa = require('koa');
+  const koaRouter = require('koa-router');
+  const bodyParser = require('koa-bodyparser');
+  const cors = require('@koa/cors');
+  const dotenv = require('dotenv');
+  const routes = require("./routes");
+  const connection = require("./database/connection");
 
-// Read and load environment variables
-dotenv.config();
+  const redis = require('redis');
+  const { promisify } = require('util');
 
-// Initializing app and router
-const app = new koa();
-const router = new koaRouter();
+  // Read and load environment variables
+  dotenv.config();
+  
+  // Init Db connection
+  // const port = process.env.REDIS_PORT;
+  // const host = process.env.REDIS_HOST;
+  // const client = await redis.createClient({
+  //   host,
+  //   port,
+  // });
 
-const serverPort = process.env.SERVER_PORT;
+  // Initializing app and router
+  const app = new koa();
+  const router = new koaRouter();
 
-// Read database on init
-// Read and attach database to ctx
-app.context.db = {};
-readDb(app.context.db);
+  const serverPort = process.env.SERVER_PORT;
 
-// Middlewares
-// BodyParser middleware
-app.use(bodyParser());
+  // Middlewares
+  // BodyParser middleware
+  app.use(bodyParser());
 
-// CORS handler middleware 
-app.use(cors());
+  // CORS handler middleware 
+  app.use(cors());
 
-// register all routes
-routes(router);
+  app.use(async (ctx, next) => {
+    ctx.state.redis = await connection();
+    next();
+  });
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+  // register all routes
+  routes(router);
 
-// register global error handler
-app.on('error', (err, ctx) => {
-  log.error('server error', err, ctx);
-});
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
-
-// app.get('/error', (ctx) => {
-
-//   log.error('server error', err, ctx)
-// });
+  // register global error handler
+  app.on('error', (err, ctx) => {
+    console.error('server error', err, ctx);
+  });
 
 
-// ctx.app.emit('error', ...args); or ctx.assert(..)
+  // app.get('/error', (ctx) => {
 
-const server = app.listen(serverPort, () => console.log('Server running on:', serverPort));
+  //   log.error('server error', err, ctx)
+  // });
 
-// Saving all in memory data to file
-gracefullStop(server);
+
+  // ctx.app.emit('error', ...args); or ctx.assert(..)
+  // Read database on init
+  // Read and attach database to ctx
+
+  const server = app.listen(serverPort, () => console.log('Server running on:', serverPort));

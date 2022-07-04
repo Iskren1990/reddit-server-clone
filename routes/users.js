@@ -5,5 +5,5 @@ module.exports = (router) => {
   // module responsible for user creation
   
   // Creates a user
-  router.post('/users',() => users.createUser);
+  router.post('/users', users.createUser);
 }
